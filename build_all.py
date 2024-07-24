@@ -18,7 +18,7 @@ def update_archlinux():
     else:
         logging.warn('cannot update archlinux image, build may fail for such a rolling distribution')
 
-def build_images():
+def build_images(use_mirror):
     logging.info('build all docker images...')
     for dockerfile in dockerfiles.iterdir():
         os_name = dockerfile.stem
@@ -29,7 +29,8 @@ def build_images():
             '-t', image_name,
             '-f', dockerfile.as_posix(),
             '--network=host',
-            '.'
+            '.',
+            '--build-arg', 'use_mirror={}'.format('true' if use_mirror else 'false')
         ]
         logging.info('run command: {}'.format(' '.join(build_cmd)))
         result = run(build_cmd, cwd='.')
@@ -69,18 +70,19 @@ def build_dandelion():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-u', '--update', help='update the rolling distribution images', action='store_true')
-    parser.add_argument('-im', '--build_images', help='build all builder images', action='store_true')
+    parser.add_argument('-im', '--build_images', '--build-images', help='build all builder images', action='store_true')
     parser.add_argument('-b', '--build', help='build dandelion with each builder image', action='store_true')
+    parser.add_argument('--use-mirror', help='use "mirrors.tuna.tsinghua.edu.cn" for updating system packages', action='store_true')
     args = parser.parse_args()
     if args.update:
         update_archlinux()
     if args.build_images:
-        build_images()
+        build_images(args.use_mirror)
     if args.build:
         all_passed = build_dandelion()
         sys.exit(not all_passed)
     if not any([args.update, args.build_images, args.build]):
         update_archlinux()
-        build_images()
+        build_images(args.use_mirror)
         all_passed = build_dandelion()
         sys.exit(not all_passed)

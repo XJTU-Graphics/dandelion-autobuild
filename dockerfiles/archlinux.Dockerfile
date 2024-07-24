@@ -1,7 +1,11 @@
 FROM archlinux:latest
+ARG use_mirror
 ENV OS_NAME=archlinux
-RUN echo 'Server = https://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch' >/etc/pacman.d/mirrorlist \
-    && pacman -Syyu --noconfirm \
+
+RUN if [ "$use_mirror" = "true" ]; then \
+    echo 'Server = https://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch' >/etc/pacman.d/mirrorlist; \
+    fi; \
+    pacman -Syyu --noconfirm \
     && pacman -S --noconfirm gcc make cmake xorg
 VOLUME /root/dandelion-dev
 VOLUME /root/build_output
