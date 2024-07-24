@@ -55,15 +55,21 @@ def build_dandelion():
             '--net', 'host',
             f'dandelion_builder:{os_name}'
         ]
-        result = run(build_cmd, cwd='.')
+        clear_cmd = ['docker', 'container', 'rm', '-f', container_name]
+        try:
+            result = run(build_cmd, cwd='.')
+        except KeyboardInterrupt:
+            # Stop container when Ctrl+C is pressed
+            run(clear_cmd)
+            raise
         if result.returncode == 0:
             logging.info('done')
         else:
             logging.error(f'compilation failed, see logs/{os_name}-[debug|release].log')
             all_passed = False
         logging.info(f'remove container {container_name}')
-        clear_cmd = ['docker', 'container', 'rm', container_name]
         run(clear_cmd)
+        
     logging.info('done')
     return all_passed
 
