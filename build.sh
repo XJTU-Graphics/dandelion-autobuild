@@ -16,7 +16,7 @@ echo 'configure dandelion (debug)...'
 cmake -S ../dandelion-dev -B . -DCMAKE_BUILD_TYPE=Debug 2>&1 | tee ${DEBUG_LOG}
 echo 'done'
 echo 'building dandelion...'
-cmake --build . --parallel 8 2>&1 | tee -a ${DEBUG_LOG}
+cmake --build . --parallel $(nproc) 2>&1 | tee -a ${DEBUG_LOG}
 echo 'done'
 
 cp ./dandelion ${ARTIFACTS_DIR}/dandelion-debug
@@ -25,7 +25,7 @@ echo 'configure dandelion (release)...'
 cmake -S ../dandelion-dev -B . -DCMAKE_BUILD_TYPE=Release 2>&1 | tee ${RELEASE_LOG}
 echo 'done'
 echo 'building dandelion...'
-cmake --build . --parallel 8 2>&1 | tee -a ${RELEASE_LOG}
+cmake --build . --parallel $(nproc) 2>&1 | tee -a ${RELEASE_LOG}
 echo 'done'
 
 cp ./dandelion ${ARTIFACTS_DIR}/dandelion-release
