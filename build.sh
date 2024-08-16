@@ -1,28 +1,28 @@
 set -euo pipefail
 
-if [ -z "$1" ]; then
-    BUILD_NAME="dev"
-else
-    BUILD_NAME=$1
-fi
+# Use assumed dandelion path in docker container
+DANDELION_PATH=${DANDELION_PATH:-"../dandelion"}
+BUILD_OUTPUT_PATH=${BUILD_OUTPUT_PATH:-"/root/build_output"}
+
+BUILD_NAME=${1:-"dev"}
 if [ "${BUILD_NAME}" = "dev" ]; then
-    CMAKE_ROOT="../dandelion"
+    CMAKE_ROOT="${DANDELION_PATH}"
     ARTIFACTS_DEBUG="dandelion"
     ARTIFACTS_RELEASE="dandelion"
 elif [ "${BUILD_NAME}" = "dev-lib" ]; then
-    CMAKE_ROOT="../dandelion/lib"
+    CMAKE_ROOT="${DANDELION_PATH}/lib"
     ARTIFACTS_DEBUG="libdandelion-bvh-debug.a libdandelion-ray-debug.a"
     ARTIFACTS_RELEASE="libdandelion-bvh.a libdandelion-ray.a"
 elif [ "${BUILD_NAME}" = "release" ]; then
-    CMAKE_ROOT="../dandelion"
+    CMAKE_ROOT="${DANDELION_PATH}"
     ARTIFACTS_DEBUG="dandelion"
     ARTIFACTS_RELEASE="dandelion"
 fi
 
-DEBUG_LOG="/root/build_output/${OS_NAME}-debug.log"
-RELEASE_LOG="/root/build_output/${OS_NAME}-release.log"
-DEBUG_ARTIFACTS_DIR="/root/build_output/${OS_NAME}-debug-artifacts"
-RELEASE_ARTIFACTS_DIR="/root/build_output/${OS_NAME}-release-artifacts"
+DEBUG_LOG="${BUILD_OUTPUT_PATH}/${OS_NAME}-debug.log"
+RELEASE_LOG="${BUILD_OUTPUT_PATH}/${OS_NAME}-release.log"
+DEBUG_ARTIFACTS_DIR="${BUILD_OUTPUT_PATH}/${OS_NAME}-debug-artifacts"
+RELEASE_ARTIFACTS_DIR="${BUILD_OUTPUT_PATH}/${OS_NAME}-release-artifacts"
 touch ${DEBUG_LOG}
 touch ${RELEASE_LOG}
 chmod 666 ${DEBUG_LOG}
