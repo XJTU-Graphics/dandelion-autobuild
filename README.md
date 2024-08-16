@@ -11,7 +11,8 @@
 
 ```shell
 $ git clone https://github.com/XJTU-Graphics/dandelion-dev
+$ mv dandelion-dev dandelion
 $ python build_all.py
 ```
 
-构建完毕后，所有的输出都会被存放在 *logs* 目录下，日志文件命名规则为 *[distro name]-[config].log* ，例如 *ubuntu-22.04-debug.log* 就表示 Ubuntu 22.04 下 Debug 模式编译的输出。
+构建完毕后，所有的输出都会被存放在 *build_output* 目录下，日志文件命名规则为 *[distro name]-[config].log* ，例如 *ubuntu-22.04-debug.log* 就表示 Ubuntu 22.04 下 Debug 模式编译的输出。

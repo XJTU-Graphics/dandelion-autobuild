@@ -8,8 +8,8 @@ RUN if [ "$use_mirror" = "true" ]; then \
     cat /etc/apt/sources.list; \
     apt-get update \
     && apt-get install -y build-essential cmake libwayland-dev libxkbcommon-dev xorg-dev
-VOLUME /root/dandelion-dev
+VOLUME /root/dandelion
 VOLUME /root/build_output
 WORKDIR /root
 COPY build.sh /root
-CMD ["/bin/bash", "/root/build.sh"]
+ENTRYPOINT ["/bin/bash", "/root/build.sh"]
