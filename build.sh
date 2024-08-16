@@ -1,8 +1,9 @@
 set -euo pipefail
 
 # Use assumed dandelion path in docker container
-DANDELION_PATH=${DANDELION_PATH:-"../dandelion"}
-BUILD_OUTPUT_PATH=${BUILD_OUTPUT_PATH:-"/root/build_output"}
+DANDELION_PATH=${DANDELION_PATH:-"dandelion"}
+BUILD_PATH=${BUILD_PATH:-"build"}
+BUILD_OUTPUT_PATH=${BUILD_OUTPUT_PATH:-"build_output"}
 
 BUILD_NAME=${1:-"dev"}
 if [ "${BUILD_NAME}" = "dev" ]; then
@@ -30,27 +31,24 @@ chmod 666 ${RELEASE_LOG}
 mkdir -p ${DEBUG_ARTIFACTS_DIR}
 mkdir -p ${RELEASE_ARTIFACTS_DIR}
 
-mkdir build
-cd build
-
 echo "configure dandelion(${BUILD_NAME}) (debug)"
-cmake -S ${CMAKE_ROOT} -B . -DCMAKE_BUILD_TYPE=Debug 2>&1 | tee ${DEBUG_LOG}
+cmake -S ${CMAKE_ROOT} -B ${BUILD_PATH} -DCMAKE_BUILD_TYPE=Debug 2>&1 | tee ${DEBUG_LOG}
 echo 'done'
 echo "building dandelion(${BUILD_NAME}) (debug)"
-cmake --build . --parallel $(nproc) 2>&1 | tee -a ${DEBUG_LOG}
+cmake --build ${BUILD_PATH} --parallel $(nproc) 2>&1 | tee -a ${DEBUG_LOG}
 echo 'done'
 
 for artifact in ${ARTIFACTS_DEBUG}; do
-    cp "./$artifact" ${DEBUG_ARTIFACTS_DIR}/
+    cp "${BUILD_PATH}/$artifact" ${DEBUG_ARTIFACTS_DIR}/
 done
 
 echo "configure dandelion(${BUILD_NAME}) (release)"
-cmake -S ${CMAKE_ROOT} -B . -DCMAKE_BUILD_TYPE=Release 2>&1 | tee ${RELEASE_LOG}
+cmake -S ${CMAKE_ROOT} -B ${BUILD_PATH} -DCMAKE_BUILD_TYPE=Release 2>&1 | tee ${RELEASE_LOG}
 echo 'done'
 echo "building dandelion(${BUILD_NAME}) (release)"
-cmake --build . --parallel $(nproc) 2>&1 | tee -a ${RELEASE_LOG}
+cmake --build ${BUILD_PATH} --parallel $(nproc) 2>&1 | tee -a ${RELEASE_LOG}
 echo 'done'
 
 for artifact in ${ARTIFACTS_RELEASE}; do
-    cp "./$artifact" ${RELEASE_ARTIFACTS_DIR}/
+    cp "${BUILD_PATH}/$artifact" ${RELEASE_ARTIFACTS_DIR}/
 done
