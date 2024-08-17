@@ -44,7 +44,7 @@ def build_images(image_list, use_mirror):
             logging.warning('failed')
     logging.info('done')
 
-def build_dandelion(image_list, build_name):
+def build_dandelion(image_list, build_kind):
     if image_list is None:
         image_files = dockerfiles.iterdir()
     else:
@@ -62,7 +62,7 @@ def build_dandelion(image_list, build_name):
             '-v', './build_output:/root/build_output',
             '--net', 'host',
             f'dandelion_builder:{os_name}',
-            build_name
+            build_kind
         ]
         clear_cmd = ['docker', 'container', 'rm', '-f', container_name]
         try:
@@ -88,7 +88,7 @@ if __name__ == '__main__':
     parser.add_argument('-i', '--image', help='select which image to use', nargs='*')
     parser.add_argument('--build-images', help='build all builder images', action='store_true')
     parser.add_argument('-b', '--build', help='build dandelion with each builder image', action='store_true')
-    parser.add_argument('--build-name', help='which version and thing to build, dev/dev-lib/release')
+    parser.add_argument('--build-kind', help='which version and thing to build, dev/dev-lib/release')
     parser.add_argument('--use-mirror', help='use "mirrors.tuna.tsinghua.edu.cn" for updating system packages', action='store_true')
     args = parser.parse_args()
     if args.update:
@@ -96,10 +96,10 @@ if __name__ == '__main__':
     if args.build_images:
         build_images(args.image, args.use_mirror)
     if args.build:
-        all_passed = build_dandelion(args.image, args.build_name)
+        all_passed = build_dandelion(args.image, args.build_kind)
         sys.exit(not all_passed)
     if not any([args.update, args.build_images, args.build]):
         update_archlinux()
         build_images(args.image, args.use_mirror)
-        all_passed = build_dandelion(args.image, args.build_name)
+        all_passed = build_dandelion(args.image, args.build_kind)
         sys.exit(not all_passed)
