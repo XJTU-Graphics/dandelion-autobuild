@@ -5,16 +5,16 @@ DANDELION_PATH=${DANDELION_PATH:-"dandelion"}
 BUILD_PATH=${BUILD_PATH:-"build"}
 BUILD_OUTPUT_PATH=${BUILD_OUTPUT_PATH:-"build_output"}
 
-BUILD_NAME=${1:-"dev"}
-if [ "${BUILD_NAME}" = "dev" ]; then
+BUILD_KIND=${1:-"dev"}
+if [ "${BUILD_KIND}" = "dev" ]; then
     CMAKE_ROOT="${DANDELION_PATH}"
     ARTIFACTS_DEBUG="dandelion"
     ARTIFACTS_RELEASE="dandelion"
-elif [ "${BUILD_NAME}" = "dev-lib" ]; then
+elif [ "${BUILD_KIND}" = "dev-lib" ]; then
     CMAKE_ROOT="${DANDELION_PATH}/lib"
     ARTIFACTS_DEBUG="libdandelion-bvh-debug.a libdandelion-ray-debug.a"
     ARTIFACTS_RELEASE="libdandelion-bvh.a libdandelion-ray.a"
-elif [ "${BUILD_NAME}" = "release" ]; then
+elif [ "${BUILD_KIND}" = "release" ]; then
     CMAKE_ROOT="${DANDELION_PATH}"
     ARTIFACTS_DEBUG="dandelion"
     ARTIFACTS_RELEASE="dandelion"
@@ -31,10 +31,10 @@ chmod 666 ${RELEASE_LOG}
 mkdir -p ${DEBUG_ARTIFACTS_DIR}
 mkdir -p ${RELEASE_ARTIFACTS_DIR}
 
-echo "configure dandelion(${BUILD_NAME}) (debug)"
+echo "configure dandelion(${BUILD_KIND}) (debug)"
 cmake -S ${CMAKE_ROOT} -B ${BUILD_PATH} -DCMAKE_BUILD_TYPE=Debug 2>&1 | tee ${DEBUG_LOG}
 echo 'done'
-echo "building dandelion(${BUILD_NAME}) (debug)"
+echo "building dandelion(${BUILD_KIND}) (debug)"
 cmake --build ${BUILD_PATH} --parallel $(nproc) 2>&1 | tee -a ${DEBUG_LOG}
 echo 'done'
 
@@ -42,10 +42,10 @@ for artifact in ${ARTIFACTS_DEBUG}; do
     cp "${BUILD_PATH}/$artifact" ${DEBUG_ARTIFACTS_DIR}/
 done
 
-echo "configure dandelion(${BUILD_NAME}) (release)"
+echo "configure dandelion(${BUILD_KIND}) (release)"
 cmake -S ${CMAKE_ROOT} -B ${BUILD_PATH} -DCMAKE_BUILD_TYPE=Release 2>&1 | tee ${RELEASE_LOG}
 echo 'done'
-echo "building dandelion(${BUILD_NAME}) (release)"
+echo "building dandelion(${BUILD_KIND}) (release)"
 cmake --build ${BUILD_PATH} --parallel $(nproc) 2>&1 | tee -a ${RELEASE_LOG}
 echo 'done'
 
