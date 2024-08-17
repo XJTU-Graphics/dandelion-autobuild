@@ -10,7 +10,7 @@ if [ "${BUILD_KIND}" = "dev" ]; then
     CMAKE_ROOT="${DANDELION_PATH}"
     ARTIFACTS_DEBUG="dandelion"
     ARTIFACTS_RELEASE="dandelion"
-elif [ "${BUILD_KIND}" = "dev-lib" ]; then
+elif [ "${BUILD_KIND}" = "lib" ]; then
     CMAKE_ROOT="${DANDELION_PATH}/lib"
     ARTIFACTS_DEBUG="libdandelion-bvh-debug.a libdandelion-ray-debug.a"
     ARTIFACTS_RELEASE="libdandelion-bvh.a libdandelion-ray.a"
@@ -18,6 +18,9 @@ elif [ "${BUILD_KIND}" = "release" ]; then
     CMAKE_ROOT="${DANDELION_PATH}"
     ARTIFACTS_DEBUG="dandelion"
     ARTIFACTS_RELEASE="dandelion"
+else
+    echo "Please specify a valid build kind (dev, lib, release)" 1>&2
+    exit 1
 fi
 
 DEBUG_LOG="${BUILD_OUTPUT_PATH}/${OS_NAME}-debug.log"
