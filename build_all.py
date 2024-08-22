@@ -88,7 +88,7 @@ if __name__ == '__main__':
     parser.add_argument('-i', '--image', help='select which image to use', nargs='*', default=None)
     parser.add_argument('--build-images', help='build all builder images', action='store_true')
     parser.add_argument('-b', '--build', help='build dandelion with each builder image', action='store_true')
-    parser.add_argument('--build-kind', help='which version and thing to build, dev/dev-lib/release', default='dev')
+    parser.add_argument('--build-kind', help='which version and thing to build, can be one of dev/lib/release/test', default='dev')
     parser.add_argument('--use-mirror', help='use "mirrors.tuna.tsinghua.edu.cn" for updating system packages', action='store_true')
     args = parser.parse_args()
     if args.update:

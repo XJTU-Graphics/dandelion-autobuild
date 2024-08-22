@@ -18,6 +18,10 @@ elif [ "${BUILD_KIND}" = "release" ]; then
     CMAKE_ROOT="${DANDELION_PATH}"
     ARTIFACTS_DEBUG="dandelion"
     ARTIFACTS_RELEASE="dandelion"
+elif [ "${BUILD_KIND}" = "test" ]; then
+    CMAKE_ROOT="${DANDELION_PATH}/test"
+    ARTIFACTS_DEBUG=""
+    ARTIFACTS_RELEASE=""
 else
     echo "Please specify a valid build kind (dev, lib, release)" 1>&2
     exit 1
