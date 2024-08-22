@@ -20,7 +20,7 @@ def update_archlinux():
 
 def build_images(image_list, use_mirror):
     if image_list is None:
-        image_files = dockerfiles.iterdir()
+        image_files = list(dockerfiles.iterdir())
     else:
         image_files = (Path(x) for x in image_list)
     logging.info('build docker images: {}'.format(image_files))
@@ -39,19 +39,20 @@ def build_images(image_list, use_mirror):
         logging.info('run command: {}'.format(' '.join(build_cmd)))
         result = run(build_cmd, cwd='.')
         if result.returncode == 0:
-            logging.info('done')
+            logging.info(f'successfully built builder image for {os_name}')
         else:
-            logging.warning('failed')
-    logging.info('done')
+            logging.warning(f'failed to build builder image for {os_name}')
+    logging.info('finish building builder images')
 
 def build_dandelion(image_list, build_kind):
     if image_list is None:
-        image_files = dockerfiles.iterdir()
+        image_files = list(dockerfiles.iterdir())
     else:
         image_files = (Path(x) for x in image_list)
     logging.info('run auto-build with: {}'.format(image_files))
     os_names = [dockerfile.stem for dockerfile in image_files]
     all_passed = True
+    build_result = dict()
     for os_name in os_names:
         container_name = f'dandelion_builder_{os_name}'
         logging.info(f'build dandelion on {os_name}')
@@ -71,6 +72,7 @@ def build_dandelion(image_list, build_kind):
             # Stop container when Ctrl+C is pressed
             run(clear_cmd)
             raise
+        build_result[os_name] = 'success' if result.returncode == 0 else 'failed'
         if result.returncode == 0:
             logging.info('done')
         else:
@@ -79,7 +81,11 @@ def build_dandelion(image_list, build_kind):
         logging.info(f'remove container {container_name}')
         run(clear_cmd)
         
-    logging.info('done')
+    logging.info(f'finish building dandelion ({build_kind}), result:')
+    logging.info('{:<15}{:<10}'.format('Distro', 'Result'))
+    logging.info('=========================')
+    for os_name in build_result:
+        logging.info(f'{os_name:<15}{build_result[os_name]:<10}')
     return all_passed
 
 if __name__ == '__main__':
