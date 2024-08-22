@@ -16,7 +16,7 @@ def update_archlinux():
     if result.returncode == 0:
         logging.info('archlinux image is up to date now')
     else:
-        logging.warn('cannot update archlinux image, build may fail for such a rolling distribution')
+        logging.warning('cannot update archlinux image, build may fail for such a rolling distribution')
 
 def build_images(image_list, use_mirror):
     if image_list is None:
@@ -85,10 +85,10 @@ def build_dandelion(image_list, build_kind):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-u', '--update', help='update the rolling distribution images', action='store_true')
-    parser.add_argument('-i', '--image', help='select which image to use', nargs='*')
+    parser.add_argument('-i', '--image', help='select which image to use', nargs='*', default=None)
     parser.add_argument('--build-images', help='build all builder images', action='store_true')
     parser.add_argument('-b', '--build', help='build dandelion with each builder image', action='store_true')
-    parser.add_argument('--build-kind', help='which version and thing to build, dev/dev-lib/release')
+    parser.add_argument('--build-kind', help='which version and thing to build, dev/dev-lib/release', default='dev')
     parser.add_argument('--use-mirror', help='use "mirrors.tuna.tsinghua.edu.cn" for updating system packages', action='store_true')
     args = parser.parse_args()
     if args.update:
