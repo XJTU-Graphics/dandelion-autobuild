@@ -1,9 +1,9 @@
-FROM ubuntu:22.04
+FROM debian:13
 ARG use_mirror
-ENV OS_NAME=ubuntu-22.04
+ENV OS_NAME=debian-13
 
 RUN if [ "$use_mirror" = "true" ]; then \
-    sed -i 's#archive.ubuntu.com#mirrors.tuna.tsinghua.edu.cn#g' /etc/apt/sources.list; \
+    sed -i 's#deb.debian.org#mirrors.tuna.tsinghua.edu.cn#g' /etc/apt/sources.list.d/debian.sources; \
     fi; \
     apt-get update \
     && apt-get install -y build-essential cmake libwayland-dev libxkbcommon-dev xorg-dev
